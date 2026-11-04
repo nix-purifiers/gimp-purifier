@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "build": "meson",
+      "hash": "sha256-0PRZ5VHUKOPNP+xMPr/kSObilH2bJFUzczCNbUHd1YA=",
+      "mirrors": [],
+      "name": "resynthesizer",
+      "path": "resynthesizer.tar",
+      "url": "https://github.com/bootchk/resynthesizer/archive/refs/tags/v3.0.tar.gz"
+    }
+  ],
+  "purifier": "gimp",
+  "sdk": "a64cd9f282143296a1fb6e854028eaebcc4505cc133745befd25e224ff9622fc",
+  "selection": {
+    "plugins": [
+      {
+        "build": "meson",
+        "name": "resynthesizer",
+        "url": "https://github.com/bootchk/resynthesizer/archive/refs/tags/v3.0.tar.gz"
+      }
+    ]
+  },
+  "version": 1
+}

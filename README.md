@@ -93,7 +93,26 @@ The wrapper controls code resolution; it does not sandbox arbitrary plug-in
 or batch-script behavior.
 
 Linux x86_64 and aarch64 are configured. Runtime verification currently runs
-on x86_64. Typed projection interfaces are unsupported.
+on x86_64. Explicit public resource projections are available as described
+below. An image export does not establish a library ABI or browser renderer.
+
+## Public resource projections
+
+`buildGimpProject` accepts explicit `resourceRoots` mapping exported paths to
+relative paths inside its native build output. For example,
+`resourceRoots."image.ppm" = "image.ppm";` packages the actual exported image
+through `.projections.resources`, `.projections.web`, and
+`.projections.java-resources` on the build result and `packages.project`.
+The selected view has `.directory`, `.documentRoot`, `.classPath`, and
+`.catalog` paths. Optional `resourceDependencies` supplies other selected
+resource views. Defaults remain empty.
+
+Only explicitly selected public artifacts are included. The check reads exact
+native Gimp image bytes through HTTP and Java, verifies the PPM raster shape
+and exact resource JAR entries, excludes a physically present private sibling,
+and rejects missing outputs and source/destination traversal. Profiles,
+source, caches and projection metadata are not selected implicitly. This is
+image resource packaging, without a browser rendering or FFI claim.
 
 ## Credits
 

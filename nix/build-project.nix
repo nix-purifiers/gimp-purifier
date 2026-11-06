@@ -2,6 +2,7 @@
   lib,
   runCommand,
   python3,
+  purifier,
   lockedSdk,
   environment,
   readLock,
@@ -16,6 +17,8 @@
   fetchers ? { },
   doCheck ? false,
   checkCommand ? "",
+  resourceRoots ? { },
+  resourceDependencies ? [ ],
 }:
 let
   lock = readLock { inherit src lockFile; };
@@ -39,7 +42,7 @@ let
         "output"
       ]);
   };
-  project = runCommand "gimp-project" { } ''
+  builtProject = runCommand "gimp-project" { } ''
     export GIMP_PURIFIER_ENVIRONMENT=${profile} GIMP_PURIFIER_LOCKED_SDK=${lockedSdk}
     export GIMP_PURIFIER_CACHE=${emptyCache}
     export HOME="$TMPDIR/home" XDG_CONFIG_HOME="$TMPDIR/config" XDG_DATA_HOME="$TMPDIR/data" XDG_CACHE_HOME="$TMPDIR/cache"
@@ -51,6 +54,17 @@ let
     ${python3}/bin/python ${driver}/run_project.py ${lib.escapeShellArg script}
     ${lib.optionalString doCheck checkCommand}
   '';
+  projections = lib.optionalAttrs (resourceRoots != { }) (
+    purifier.resourceProjections {
+      producer = builtProject;
+      roots = resourceRoots;
+      dependencies = resourceDependencies;
+      inherit runCommand python3;
+    }
+  );
+  project = builtProject // {
+    inherit projections;
+  };
   release =
     runCommand "gimp-project-release"
       {
@@ -71,6 +85,6 @@ in
     environment = profile;
   };
   tests = project;
-  inherit release;
+  inherit release projections;
   fetches = lock.entries;
 }

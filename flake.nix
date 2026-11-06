@@ -81,6 +81,10 @@
         in
         {
           cli = p.cli;
+          resources = import ./tests/resource-projections.nix {
+            pkgs = pkgsFor system;
+            build = p.buildGimpProject;
+          };
           inherit (build.packages) environment project;
           release = build.release;
         }
